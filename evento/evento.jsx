@@ -20,10 +20,10 @@ const Eventos = ({ show, handleClose }) => {
     const directorio = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
-        // Cargar la lista de eventos cuando el componente se monte
         const data = { tarea: "busca_eventos" };
         axios.post(`${directorio}php/evento.php`, JSON.stringify(data))
             .then((response) => {
+                console.log("Respuesta de la API:", response.data); // Verifica la respuesta
                 if (response.data && response.data.length > 0) {
                     setTablaevento(response.data);
                 } else {
@@ -32,6 +32,7 @@ const Eventos = ({ show, handleClose }) => {
             })
             .catch((error) => console.log('Error al cargar los eventos', error));
     }, [directorio]);
+    
 
     // Reaccionar ante cambios en el directorio
 
@@ -82,8 +83,7 @@ const Eventos = ({ show, handleClose }) => {
     const aceptar = () => {
         const evento = {
             nombre: eventoSeleccionado?.nombre || '',
-            organiza: eventoSeleccionado?.organiza || '',
-            lugar: eventoSeleccionado?.lugar || '',
+
             fecha: eventoSeleccionado?.fecha || '',
             hora: eventoSeleccionado?.hora || '',
             cupo: eventoSeleccionado?.cupo || '',
@@ -135,8 +135,6 @@ const Eventos = ({ show, handleClose }) => {
                             <tr>
                                 <th>#</th>
                                 <th>Nombre</th>
-                                <th>Organiza</th>
-                                <th>Lugar</th>
                                 <th>Fecha</th>
                                 <th>Hora</th>
                                 <th>Cupo</th>
@@ -148,24 +146,18 @@ const Eventos = ({ show, handleClose }) => {
                                 tablaevento.map((evento) => (
                                     <tr key={evento.id_evento}>
                                         <td>{evento.id_evento}</td>
-                                        <td>{evento.nombre}</td>
-                                        <td>{evento.organiza}</td>
-                                        <td>{evento.lugar}</td>
+                                        <td>{evento.nombre_evento}</td>
                                         <td>
                                             {console.log("Fecha recibida:", evento.fecha)}  {/* Verifica qué valor llega */}
                                             {evento.fecha
                                                 ? new Date(evento.fecha.split(' ')[0]).toLocaleDateString()  // Solo toma la parte de la fecha (YYYY-MM-DD)
                                                 : 'Fecha no disponible'}
                                         </td>
-
                                         <td>
                                             {evento.hora
                                                 ? new Date('1970-01-01T' + evento.hora).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                                                 : 'Hora no disponible'}
                                         </td>
-
-
-
                                         <td>{evento.cupo}</td>
                                         <td style={{ textAlign: 'center' }}>
                                             <FaRegTrashCan
@@ -196,19 +188,10 @@ const Eventos = ({ show, handleClose }) => {
                     <Card.Body>
                         <Row>
                             <Col md={6}>
-                                <FloatingLabel controlId="floatingInput" label="Fecha Evento" className="mb-3">
-                                    <Form.Control
-                                        type="date"
-                                        value={eventoSeleccionado?.fecha || ''}
-                                        onChange={(e) => setEventoSeleccionado({ ...eventoSeleccionado, fecha: e.target.value })}
-                                    />
-                                </FloatingLabel>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col md={6}>
-                                <FloatingLabel controlId="floatingInput" label="Nombre" className="mb-3">
-                                    <Form.Control
+                            <FloatingLabel controlId="floatingInput" label="Nombre" className="mb-3">
+
+
+                                <Form.Control
                                         type="text"
                                         value={eventoSeleccionado?.nombre || ''}
                                         onChange={(e) => setEventoSeleccionado({ ...eventoSeleccionado, nombre: e.target.value })}
@@ -218,11 +201,24 @@ const Eventos = ({ show, handleClose }) => {
                         </Row>
                         <Row>
                             <Col md={6}>
-                                <FloatingLabel controlId="floatingInput" label="Lugar" className="mb-3">
+                                <FloatingLabel controlId="floatingInput" label="Fecha Evento" className="mb-3">
+
+
+                                <Form.Control
+                                        type="date"
+                                        value={eventoSeleccionado?.fecha || ''}
+                                        onChange={(e) => setEventoSeleccionado({ ...eventoSeleccionado, fecha: e.target.value })}
+                                    />
+                                </FloatingLabel>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md={6}>
+                                <FloatingLabel controlId="floatingInput" label="Hora" className="mb-3">
                                     <Form.Control
                                         type="text"
-                                        value={eventoSeleccionado?.lugar || ''}
-                                        onChange={(e) => setEventoSeleccionado({ ...eventoSeleccionado, lugar: e.target.value })}
+                                        value={eventoSeleccionado?.hora|| ''}
+                                        onChange={(e) => setEventoSeleccionado({ ...eventoSeleccionado, hora: e.target.value })}
                                     />
                                 </FloatingLabel>
                             </Col>

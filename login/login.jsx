@@ -9,6 +9,7 @@ import React from 'react';
 import { Card, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaLock } from 'react-icons/fa';
+import "./login.css"
 import bcrypt from 'bcryptjs'
 
 

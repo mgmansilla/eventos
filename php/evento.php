@@ -4,7 +4,7 @@
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
-require('../php/conexion_db.php'); // Ajustar la ruta al archivo de conexión de la base de datos
+require('../php/conexion_db.php'); // Ajusta la ruta al archivo de conexión de la base de datos
 
 // Leer el cuerpo de la solicitud (json)
 $data = file_get_contents("php://input");
@@ -52,17 +52,16 @@ function buscaEventos($conn) {
 
 function modievento($conn, $datos) {
     $id = $datos['evento']['id_evento'];
-    $nombre = $datos['evento']['nombre'];
-    $lugar = $datos['evento']['lugar'];
+    $nombre = $datos['evento']['nombre_evento'];
     $fecha = $datos['evento']['fecha'];
     $hora = $datos['evento']['hora'];
     $descripcion = $datos['evento']['descripcion'];
     $cupo = $datos['evento']['cupo'];
 
-    $sql = "UPDATE evento SET nombre = ?, lugar = ?, fecha = ?, hora = ?, descripcion = ?, cupo = ? WHERE id_evento = ?";
+    $sql = "UPDATE evento SET nombre_evento = ?, fecha = ?, hora = ?, descripcion = ?, cupo = ? WHERE id_evento = ?";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssii", $nombre, $lugar, $fecha, $hora, $descripcion, $cupo, $id);
+    $stmt->bind_param("ssssssi", $nombre, $fecha, $hora, $descripcion, $cupo, $id);
 
     if ($stmt->execute()) {
         // Obtener el evento actualizado para enviarlo de vuelta
@@ -82,18 +81,16 @@ function modievento($conn, $datos) {
     $conn->close();
 }
 
-
-
 function crearEvento($conn, $datos) {
-    $nombre = $datos['nombre'];
-    $lugar = $datos['lugar'];
-    $fecha = $datos['fecha'];
-    $hora= $datos['hora'];
-    $cupo = $datos['cupo'];
+    $nombre = $datos['evento']['nombre_evento'];
+    $fecha = $datos['evento']['fecha'];
+    $hora = $datos['evento']['hora'];
+    $cupo = $datos['evento']['cupo'];
+    $descripcion = $datos['evento']['descripcion'];
 
-    $sql = "INSERT INTO evento (nombre, lugar, fecha, hora, cupo) VALUES (?, ?, ?, ?,?)";
+    $sql = "INSERT INTO evento (nombre_evento, fecha, hora, cupo, descripcion) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssi", $nombre, $lugar, $fecha, $hora, $cupo);
+    $stmt->bind_param("ssssss", $nombre, $fecha, $hora, $cupo, $descripcion);
 
     if ($stmt->execute()) {
         echo json_encode(["mensaje" => "Evento creado con éxito."]);
@@ -106,9 +103,9 @@ function crearEvento($conn, $datos) {
 }
 
 function eliminarEvento($conn, $datos) {
-    $id = $datos['id'];
+    $id = $datos['id_evento'];
 
-    $sql = "DELETE FROM evento WHERE id = ?";
+    $sql = "DELETE FROM evento WHERE id_evento = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
 
@@ -121,5 +118,4 @@ function eliminarEvento($conn, $datos) {
     $stmt->close();
     $conn->close();
 }
-
 ?>
