@@ -82,34 +82,36 @@ const Eventos = ({ show, handleClose }) => {
 
     const aceptar = () => {
         const evento = {
-            nombre: eventoSeleccionado?.nombre || '',
-
+            id_evento: eventoSeleccionado?.id_evento,  // Asegúrate de incluir el ID del evento
+            nombre_evento: eventoSeleccionado?.nombre_evento || '',
             fecha: eventoSeleccionado?.fecha || '',
             hora: eventoSeleccionado?.hora || '',
             cupo: eventoSeleccionado?.cupo || '',
             descripcion: eventoSeleccionado?.descripcion || '',
         };
     
+        console.log('Datos a enviar:', evento); // Verifica que los datos sean correctos
+    
         const data = {
-            tarea: banderaevento === 0 ? "crear_evento" : "modificar_evento",
+            tarea: banderaevento === 0 ? "crear_evento" : "modificar_evento", // Asegúrate de usar el nombre correcto
             evento,
         };
     
         axios.post(`${directorio}php/evento.php`, JSON.stringify(data))
             .then((response) => {
-                // Si es un nuevo evento, lo agregamos a la tabla
+                console.log('Respuesta del servidor:', response.data); // Verifica la respuesta del servidor
+    
                 if (banderaevento === 0) {
-                    setTablaevento((prevTabla) => [...prevTabla, response.data]);  // Usar el estado anterior correctamente
+                    setTablaevento((prevTabla) => [...prevTabla, response.data]);  // Agregar evento nuevo
                 } else {
-                    // Si es una modificación, reemplazamos el evento modificado en la tabla
                     setTablaevento((prevTabla) =>
                         prevTabla.map((e) =>
                             e.id_evento === eventoSeleccionado.id_evento ? response.data : e
                         )
-                    );
+                    );  // Actualizar evento existente
                 }
     
-                handleClose1();  // Cerrar modal solo después de actualizar la tabla
+                handleClose1();  // Cerrar modal
             })
             .catch((error) => {
                 console.error('Error al guardar evento:', error);

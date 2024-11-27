@@ -50,15 +50,15 @@ function buscaEventos($conn) {
     $conn->close();
 }
 
-function modievento($conn, $datos) {
+function modievento($conn, $datosRecibidos) {
     $id = $datos['evento']['id_evento'];
     $nombre = $datos['evento']['nombre_evento'];
     $fecha = $datos['evento']['fecha'];
-    $hora = $datos['evento']['hora'];
-    $descripcion = $datos['evento']['descripcion'];
+    $hora = $datos['evento']['hora']; 
     $cupo = $datos['evento']['cupo'];
-
-    $sql = "UPDATE evento SET nombre_evento = ?, fecha = ?, hora = ?, descripcion = ?, cupo = ? WHERE id_evento = ?";
+    $descripcion = $datos['evento']['descripcion'];
+   
+    $sql = "UPDATE evento SET nombre_evento = ?, fecha = ?, hora = ?, cupo = ?WHERE id_evento = ?, descripcion = ? ";
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ssssssi", $nombre, $fecha, $hora, $descripcion, $cupo, $id);
@@ -71,14 +71,11 @@ function modievento($conn, $datos) {
         $stmt->execute();
         $result = $stmt->get_result();
         $eventoActualizado = $result->fetch_assoc();
-
+    
         echo json_encode($eventoActualizado);  // Retornar el evento actualizado
     } else {
         echo json_encode(["mensaje" => "Error al modificar el evento."]);
     }
-
-    $stmt->close();
-    $conn->close();
 }
 
 function crearEvento($conn, $datos) {
